@@ -4,7 +4,10 @@ import sys
 import os
 
 
-def init_logger() -> logging.Logger:
+def logger_init(name: str,
+                file_level: int | str = logging.DEBUG,
+                stream_level: int | str = logging.WARNING,
+                ) -> logging.Logger:
     log_formatter = logging.Formatter(
         "%(asctime)s [%(levelname)-3.3s]  %(message)s")
 
@@ -17,14 +20,14 @@ def init_logger() -> logging.Logger:
     file_handler = logging.FileHandler(
         f"{log_directory}/"
         f"{datetime.datetime.now().time().strftime(time_str_format)}.log")
-    file_handler.setLevel(logging.DEBUG)
+    file_handler.setLevel(file_level)
     file_handler.setFormatter(log_formatter)
 
     stream_handler = logging.StreamHandler(sys.stdout)
-    stream_handler.setLevel(logging.WARNING)
+    stream_handler.setLevel(stream_level)
     stream_handler.setFormatter(log_formatter)
 
-    logger_base = logging.getLogger("Logger")
+    logger_base = logging.getLogger(name)
     logger_base.setLevel(logging.DEBUG)
     logger_base.addHandler(stream_handler)
     logger_base.addHandler(file_handler)
@@ -33,10 +36,9 @@ def init_logger() -> logging.Logger:
 
 
 if __name__ == '__main__':
-    logger = init_logger()
+    logger = logger_init("Logger", logging.DEBUG, logging.WARNING)
 
     logger.info("This is info")
     logger.warning("This is warning")
     logger.debug("This is debug")
     logger.error("This is error")
-
